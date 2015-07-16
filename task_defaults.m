@@ -28,6 +28,7 @@ defaults.escape         = 'ESCAPE'; % escape key (to exit early)
 %==========================================================================
 defaults.path.base      = pwd;
 defaults.path.data      = fullfile(defaults.path.base, 'data');
+if ~exist(defaults.path.data, 'dir'), mkdir(defaults.path.data); end
 defaults.path.utilities = fullfile(defaults.path.base, 'ptb-utilities');
 defaults.path.stim      = fullfile(defaults.path.base, 'stimuli');
 defaults.path.design    = fullfile(defaults.path.base, 'design');
