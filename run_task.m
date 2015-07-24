@@ -105,9 +105,9 @@ storypromptTex = Screen('MakeTexture', w.win, imread([defaults.path.stim filesep
 fixTex = Screen('MakeTexture', w.win, imread([defaults.path.stim filesep 'fixation.jpg']));
 % belief
 d   = dir(fullfile(defaults.path.stim, '*belief_question.txt')); 
-bq  = {d.name};
+bq  = strcat(defaults.path.stim, filesep, {d.name});
 d   = dir(fullfile(defaults.path.stim, '*belief_story.txt')); 
-bs  = {d.name};
+bs  = strcat(defaults.path.stim, filesep, {d.name});
 for i = 1:10
     
     belief(i).storyfile = bs{i};
@@ -139,9 +139,9 @@ end
    
 % false-photo
 d = dir(fullfile(defaults.path.stim, '*photo_question.txt'));
-pq = {d.name};
+pq = strcat(defaults.path.stim, filesep, {d.name});
 d = dir(fullfile(defaults.path.stim, '*photo_story.txt'));
-ps = {d.name};
+ps = strcat(defaults.path.stim, filesep, {d.name});
 for i = 1:10
     
     photo(i).storyfile = ps{i};
