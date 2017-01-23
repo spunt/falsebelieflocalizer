@@ -1,6 +1,6 @@
 function run_task(test_tag)
 % RUN_TASK  Run False-Belief Localizer
-%  
+%
 %   USAGE: run_task([test_tag])
 %
 %     SEEKER COLUMN KEY
@@ -36,16 +36,17 @@ script_name='| ----------- True/False Test ----------- |'; boxTop(1:length(scrip
 fprintf('\n%s\n%s\n%s\n',boxTop,script_name,boxTop)
 
 %% DEFAULTS %%
-defaults = task_defaults; 
-trigger = KbName(defaults.trigger);
-storyDur = defaults.storyDur; 
-questionDur = defaults.questionDur; 
+defaults    = task_defaults;
+KbName('UnifyKeyNames');
+trigger     = KbName(defaults.trigger);
+storyDur    = defaults.storyDur;
+questionDur = defaults.questionDur;
 addpath(defaults.path.utilities)
 
 %% Load Design and Setup Seeker Variable %%
 load([defaults.path.design filesep 'design.mat'])
-numTRs          = ceil(sum(Seeker(end,3:5))/defaults.TR); 
-totalTime       = defaults.TR*numTRs; 
+numTRs          = ceil(sum(Seeker(end,3:5))/defaults.TR);
+totalTime       = defaults.TR*numTRs;
 Seeker(:,4:5)   = [];
 Seeker(:,4:10)  = zeros(length(Seeker),7);
 Seeker(:,4)     = Seeker(:,3) + 15;
@@ -81,7 +82,7 @@ switch upper(computer)
     inputDevice = [];
 end
 resp_set = ptb_response_set([defaults.valid_keys defaults.escape]); % response set
- 
+
 %% Initialize Screen %%
 try
     w = ptb_setup_screen(0,250,defaults.font.name,defaults.font.size1, defaults.screenres); % setup screen
@@ -104,15 +105,15 @@ instructTex = Screen('MakeTexture', w.win, imread([defaults.path.stim filesep 'i
 storypromptTex = Screen('MakeTexture', w.win, imread([defaults.path.stim filesep 'storyprompt.jpg']));
 fixTex = Screen('MakeTexture', w.win, imread([defaults.path.stim filesep 'fixation.jpg']));
 % belief
-d   = dir(fullfile(defaults.path.stim, '*belief_question.txt')); 
+d   = dir(fullfile(defaults.path.stim, '*belief_question.txt'));
 bq  = strcat(defaults.path.stim, filesep, {d.name});
-d   = dir(fullfile(defaults.path.stim, '*belief_story.txt')); 
+d   = dir(fullfile(defaults.path.stim, '*belief_story.txt'));
 bs  = strcat(defaults.path.stim, filesep, {d.name});
 for i = 1:10
-    
+
     belief(i).storyfile = bs{i};
     belief(i).questionfile = bq{i};
-    
+
     % story
     fidlog = fopen(bs{i});
     text = [];
@@ -122,7 +123,7 @@ for i = 1:10
         text = [text ' ' deblank(tmp)];
     end
     belief(i).story = deblank(text);
-    
+
     % question
     fidlog = fopen(bq{i});
     text = [];
@@ -134,19 +135,19 @@ for i = 1:10
     text = regexprep(text,'True','');
     text = regexprep(text,'False','');
     belief(i).question = deblank(text);
-    
+
 end
-   
+
 % false-photo
 d = dir(fullfile(defaults.path.stim, '*photo_question.txt'));
 pq = strcat(defaults.path.stim, filesep, {d.name});
 d = dir(fullfile(defaults.path.stim, '*photo_story.txt'));
 ps = strcat(defaults.path.stim, filesep, {d.name});
 for i = 1:10
-    
+
     photo(i).storyfile = ps{i};
     photo(i).questionfile = pq{i};
-    
+
     % story
     fidlog = fopen(ps{i});
     text = [];
@@ -156,7 +157,7 @@ for i = 1:10
         text = [text ' ' deblank(tmp)];
     end
     photo(i).story = deblank(text);
-    
+
     % question
     fidlog = fopen(pq{i});
     text = [];
@@ -168,13 +169,13 @@ for i = 1:10
     text = regexprep(text,'True','');
     text = regexprep(text,'False','');
     photo(i).question = deblank(text);
-    
+
 end
 
 %==========================================================================
 %
 % START TASK PRESENTATION
-% 
+%
 %==========================================================================
 
 %% Present Instruction Screen %%
@@ -182,8 +183,8 @@ Screen('DrawTexture',w.win, instructTex); Screen('Flip',w.win);
 
 %% Wait for Trigger to Begin %%
 DisableKeysForKbCheck([]);
-secs=KbTriggerWait(trigger,inputDevice);	
-anchor=secs;	
+secs=KbTriggerWait(trigger,inputDevice);
+anchor=secs;
 Screen('DrawTexture',w.win, fixTex); Screen('Flip',w.win);
 
 try
@@ -193,7 +194,7 @@ try
     %======================================================================
     % BEGIN TRIAL LOOP
     %======================================================================
-    for t = 1:nTrials 
+    for t = 1:nTrials
 
         DrawFormattedText(w.win,'- GET READY -','center','center',w.white, defaults.font.wrap);
         WaitSecs('UntilTime',anchor + Seeker(t,3) - 2);
@@ -201,7 +202,7 @@ try
         Screen('FillRect', w.win, w.black);
         WaitSecs('UntilTime',anchor + Seeker(t,3) - .5);
         Screen('Flip', w.win);
-        
+
         % Prep and flip story
         idx = Seeker(t,5);
         if Seeker(t,2)==1
@@ -213,7 +214,7 @@ try
         end
         Screen('DrawTexture',w.win,storypromptTex);
         DrawFormattedText(w.win,story, 'center','center',w.white,defaults.font.wrap);
-        WaitSecs('UntilTime', anchor + Seeker(t,3)); 
+        WaitSecs('UntilTime', anchor + Seeker(t,3));
         Screen('Flip', w.win);
         storyOnset = GetSecs;
         Seeker(t,6) = storyOnset - anchor;
@@ -227,12 +228,12 @@ try
             end
         end
 
-        % Prep question 
-        DrawFormattedText(w.win,[question '\n\nTrue(1)        False(2)'], 'center','center',w.white,defaults.font.wrap); 
+        % Prep question
+        DrawFormattedText(w.win,[question '\n\nTrue(1)        False(2)'], 'center','center',w.white,defaults.font.wrap);
         WaitSecs(.15);
         Screen('Flip',w.win);
         Seeker(t,7) = GetSecs - anchor;
-        
+
         %% Look for Button Press %%
         [resp, rt] = ptb_get_resp_windowed_noflip(inputDevice, resp_set, storyDur, defaults.ignoreDur);
         Seeker(t,10) = GetSecs - storyOnset;
@@ -242,9 +243,9 @@ try
                 fprintf('\nESCAPE KEY DETECTED\n'); return
             end
             Seeker(t,8) = str2num(resp(1));
-            Seeker(t,9) = rt; 
+            Seeker(t,9) = rt;
         end
-         
+
         % Present fixation cross during intertrial interval
         Screen('DrawTexture', w.win, fixTex);
         Screen('Flip', w.win);
@@ -254,36 +255,38 @@ try
             fprintf(fidlog,[repmat('%d\t',1,size(Seeker,2)) '\n'],Seeker(t,:));
         catch   % if sub responds weirdly, trying to print the resp crashes the log file...instead print "ERR"
             fprintf(fidlog,'ERROR SAVING THIS TRIAL\n');
-        end;        
+        end;
 
     end % END BLOCK LOOP
-    
+
     %% Present Fixation Screen Until End of Scan %%
     WaitSecs('UntilTime', anchor + totalTime);
 
 catch
-    
-    sca; rmpath(defaults.path.utilities)
+
+    ptb_exit;
+    rmpath(defaults.path.utilities);
     psychrethrow(psychlasterror);
-    
+
 end
 
 %% Save Data to Matlab Variable %%
 d=clock;
 outfile=sprintf('tom_%s_%s_%02.0f-%02.0f.mat',subjectID,date,d(4),d(5));
 try
-    save(fullfile(defaults.path.data, outfile), 'subjectID', 'Seeker', 'belief', 'photo'); 
+    save(fullfile(defaults.path.data, outfile), 'subjectID', 'Seeker', 'belief', 'photo');
 catch
 	fprintf('couldn''t save %s\n saving to falsebeliefdata.mat\n',outfile);
-	save falsebeliefdata
+	save falsebeliefdata.mat
 end;
 
 %% End of Test Screen %%
 DrawFormattedText(w.win,'TEST COMPLETE\n\nPress any key to exit.','center','center',w.white,defaults.font.wrap);
-Screen('Flip', w.win); 
-KbWait; 
+Screen('Flip', w.win);
+ptb_any_key;
 
 %% Exit %%
-sca; rmpath(defaults.path.utilities)
+ptb_exit;
+rmpath(defaults.path.utilities)
 
 end
